@@ -1,0 +1,228 @@
+{
+	"info": {
+		"_postman_id": "67e51180-de19-4bf9-ae3a-a1b8c3a4fb07",
+		"name": "Apis",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12207938",
+		"_collection_link": "https://jaimecabrera.postman.co/workspace/Devco~84c14e67-7ac8-4123-853f-beb79e0c1edb/collection/12207938-67e51180-de19-4bf9-ae3a-a1b8c3a4fb07?action=share&source=collection_link&creator=12207938"
+	},
+	"item": [
+		{
+			"name": "Get Videos Youtube",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"  pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Make the response time less than 1 second\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Thumbnails are present for each item\", function () {\r",
+							"    const items = pm.response.json().items;\r",
+							"    items.forEach(item => {\r",
+							"        pm.expect(item.snippet.thumbnails).to.exist;\r",
+							"        pm.expect(item.snippet.thumbnails.default).to.exist;\r",
+							"        pm.expect(item.snippet.thumbnails.medium).to.exist;\r",
+							"        pm.expect(item.snippet.thumbnails.high).to.exist;\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Total results count is a positive number\", function () {\r",
+							"    const totalResults = pm.response.json().pageInfo.totalResults;\r",
+							"    pm.expect(totalResults).to.be.a('number');\r",
+							"    pm.expect(totalResults).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"NextPageToken and regionCode fields are present and non-empty\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    console.log(responseData)\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.nextPageToken).to.exist.and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"    pm.expect(responseData.regionCode).to.exist.and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://content-youtube.googleapis.com/youtube/v3/search?q=weeknd&part=snippet&key=AIzaSyCQQSSqNrmpS37HcSSDYTRw5h52pbv2KDQ",
+					"protocol": "https",
+					"host": [
+						"content-youtube",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "weeknd"
+						},
+						{
+							"key": "part",
+							"value": "snippet"
+						},
+						{
+							"key": "key",
+							"value": "AIzaSyCQQSSqNrmpS37HcSSDYTRw5h52pbv2KDQ"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LenguajeNatural",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is an object with sentences, entities, documentSentiment, languageCode, categories, moderationCategories, and languageSupported properties\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.be.an('object').that.has.all.keys('sentences', 'entities', 'documentSentiment', 'languageCode', 'categories', 'moderationCategories', 'languageSupported');\r",
+							"\r",
+							"\r",
+							"});pm.test(\"Each sentence has a text and sentiment property\", function () {\r",
+							"    pm.response.json().sentences.forEach(function(sentence) {\r",
+							"        pm.expect(sentence).to.have.property('text').that.is.an('object');\r",
+							"        pm.expect(sentence).to.have.property('sentiment').that.is.an('object');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Each entity has a name, type, metadata, and mentions property\", function () {\r",
+							"    pm.response.json().entities.forEach(function(entity) {\r",
+							"        pm.expect(entity).to.have.property('name').that.is.a('string');\r",
+							"        pm.expect(entity).to.have.property('type').that.is.a('string');\r",
+							"        console.log(entity)\r",
+							"        pm.expect(entity).to.have.property('metadata').that.is.an('object').and.not.null\r",
+							"        pm.expect(entity).to.have.property('mentions').that.is.an('array').and.not.empty;\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Document sentiment has magnitude and score properties\", function () {\r",
+							"    pm.expect(pm.response.json().documentSentiment).to.have.property('magnitude').that.is.a('number');\r",
+							"    pm.expect(pm.response.json().documentSentiment).to.have.property('score').that.is.a('number');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Language code is a string\", function () {\r",
+							"    pm.expect(pm.response.json().languageCode).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Each category has a name and confidence property\", function () {\r",
+							"    pm.response.json().categories.forEach(function(category) {\r",
+							"        pm.expect(category).to.have.property('name').that.is.a('string');\r",
+							"        pm.expect(category).to.have.property('confidence').that.is.a('number');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Each moderation category has a name and confidence property\", function () {\r",
+							"    pm.response.json().moderationCategories.forEach(function(category) {\r",
+							"        pm.expect(category).to.have.property('name').that.is.a('string');\r",
+							"        pm.expect(category).to.have.property('confidence').that.is.a('number');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Language supported is a boolean\", function () {\r",
+							"    pm.expect(pm.response.json().languageSupported).to.be.a('boolean');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"document\": {\r\n        \"content\": \"Oracle ha lanzado Java 21, la última versión de su popular plataforma de lenguaje de programación. Esta versión incluye mejoras en rendimiento, estabilidad y seguridad. Además, se espera que ayude a los desarrolladores a ser más productivos, así como a fomentar la innovación en sus organizaciones.\",\r\n        \"type\": \"PLAIN_TEXT\"\r\n    },\r\n    \"encodingType\": \"UTF8\",\r\n    \"features\": {\r\n        \"classifyText\": true,\r\n        \"moderateText\": true,\r\n        \"extractEntities\": true,\r\n        \"extractDocumentSentiment\": true\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://content-language.googleapis.com/v2/documents:annotateText?alt=json&key={{API_KEY}}",
+					"protocol": "https",
+					"host": [
+						"content-language",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"v2",
+						"documents:annotateText"
+					],
+					"query": [
+						{
+							"key": "alt",
+							"value": "json"
+						},
+						{
+							"key": "key",
+							"value": "{{API_KEY}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "API_KEY",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
